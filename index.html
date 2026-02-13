@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Valentine Special ❤️</title>
+
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+  html,body { height:100%; overflow:hidden; }
+
+  body {
+    background: linear-gradient(to bottom, #000000, #020024, #090979, purple);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position: relative;
+  }
+
+  /* 🌕 Moon */
+  .moon {
+    position: absolute;
+    top: 10%;
+    left: 80%;
+    font-size: 90px;
+    filter: drop-shadow(0 0 14px rgba(255,255,255,.7));
+    animation: moonFloat 6s ease-in-out infinite, moonGlow 2s ease-in-out infinite;
+    user-select:none;
+    pointer-events:none;
+  }
+
+  @keyframes moonFloat {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-12px); }
+  }
+
+  @keyframes moonGlow {
+    0%,100% { filter: drop-shadow(0 0 12px rgba(255,255,255,.55)); }
+    50%     { filter: drop-shadow(0 0 28px rgba(255,255,255,.95)); }
+  }
+
+  /* ✨ Stars */
+  .star {
+    position:absolute;
+    width:2px; height:2px;
+    background:white;
+    border-radius:50%;
+    opacity:0.8;
+    animation: starBlink 2s infinite ease-in-out;
+    pointer-events:none;
+  }
+
+  @keyframes starBlink {
+    0%,100% { opacity:0.3; transform:scale(1); }
+    50%     { opacity:1;   transform:scale(1.6); }
+  }
+
+  /* ---------- PAGE STYLES ---------- */
+  .page {
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    text-align:center;
+    transition: opacity 1s ease;
+  }
+
+  #page2 {
+    opacity:0;
+    pointer-events:none;
+  }
+
+  h1 { font-size:2.4rem; margin-bottom:10px; }
+  p { margin-bottom:20px; font-size:1.2rem; }
+
+  /* Yes/No Buttons */
+  .options { display:flex; gap:20px; position:relative; }
+  button {
+    padding:12px 28px;
+    font-size:1.1rem;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,.3);
+    transition:0.25s;
+  }
+  #yesBtn { background:#ff4f70; color:white; }
+  #yesBtn:hover { filter:brightness(1.15); transform:translateY(-2px); }
+
+  #noBtn {
+    background:#444; color:white;
+    position:absolute;
+    left:140px; top:0;
+  }
+  .shake { animation:shake .35s; }
+  @keyframes shake {
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    50%{ transform:translateX(6px); }
+    75%{ transform:translateX(-6px); }
+  }
+
+  /* Spark trails */
+  .trail {
+    position:fixed;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    opacity:1;
+    font-size:14px;
+    filter:drop-shadow(0 0 6px rgba(255,90,150,.7));
+    transition: transform .8s ease-out, opacity .8s ease-out;
+  }
+
+  /* Burst hearts */
+  .burst {
+    position:fixed;
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    opacity:1;
+    filter:drop-shadow(0 0 8px rgba(255,80,130,.9));
+    transition: transform var(--dur,1s) ease-out, opacity var(--dur,1s) ease-out;
+  }
+
+  /* Page 2 floating hearts */
+  .bgHeart {
+    position:absolute;
+    pointer-events:none;
+    opacity:.9;
+    animation: floatUp var(--dur,6s) ease-in-out infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform:translateY(10px) scale(1); opacity:.85; }
+    50%  { transform:translateY(-14px) scale(1.1); opacity:1; }
+    100% { transform:translateY(10px) scale(1); opacity:.85; }
+  }
+  .btn {
+    margin-top: 20px; padding: 12px 24px; border: none; border-radius: 12px;
+    background: var(--accent); color:#fff; cursor:pointer; font-size: 1rem;
+    box-shadow: 0 10px 24px rgba(0,0,0,.25);
+  }
+</style>
+</head>
+
+<body>
+
+<!-- 🌕 Moon -->
+<div class="moon">🌕</div>
+
+<!-- ✨ Stars inserted by JS -->
+
+<!-- ------------------- PAGE 1 ------------------- -->
+<div id="page1" class="page">
+  <h1>💖Buddhu💖<br><br>Will you be my Valentine?💕</h1>
+  <p>Choose wisely…</p>
+
+  <div class="options">
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+  </div>
+</div>
+
+<!-- ------------------- PAGE 2 ------------------- -->
+<div id="page2" class="page">
+  <h1>💖 YAY!!! 💖</h1>
+  <h2>Best decision ever 😘</h2>
+
+<!-- Funny GIF inserted here -->
+  <img 
+    src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
+    alt="Funny GIF"
+    style="width:220px; margin:15px auto; display:block; border-radius:12px;"
+  >
+  <p>I Love You ❤️</p>
+</div>
+
+<!-- 🎵 Romantic music -->
+<audio id="bgMusic" loop>
+  <source src="https://image2url.com/r2/default/audio/1771004243380-01ac0c05-f982-420b-bc2a-f457ed6198f6.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* ----------------------------------
+     🌠 1) Generate Random Stars
+---------------------------------- */
+for (let i = 0; i < 550; i++){
+  const s = document.createElement("div");
+  s.className="star";
+  s.style.top  = Math.random()*100 + "vh";
+  s.style.left = Math.random()*100 + "vw";
+  s.style.animationDuration = (Math.random()*3 + 1) + "s";
+  document.body.appendChild(s);
+}
+
+/* ----------------------------------
+     🎵 2) Background Music Auto-play
+---------------------------------- */
+const bgMusic = document.getElementById("bgMusic");
+
+// Desktop auto-play
+bgMusic.volume = 0.5;
+bgMusic.play().catch(()=>{});
+
+// Mobile: first touch/click
+function startMusic(){
+  bgMusic.play().catch(()=>{});
+  document.removeEventListener("touchstart", startMusic);
+  document.removeEventListener("click", startMusic);
+}
+document.addEventListener("touchstart", startMusic);
+document.addEventListener("click", startMusic);
+
+/* ----------------------------------
+     🫶 Buttons logic (same as before)
+---------------------------------- */
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const page1=document.getElementById("page1");
+const page2=document.getElementById("page2");
+
+/* NO ESCAPES */
+function runaway(btn){
+  const sw=window.innerWidth, sh=window.innerHeight;
+  const bw=btn.offsetWidth, bh=btn.offsetHeight;
+  let x=Math.random()*(sw-bw-20)+10;
+  let y=Math.random()*(sh-bh-20)+10;
+  btn.style.left=x+"px";
+  btn.style.top=y+"px";
+  btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
+}
+noBtn.addEventListener("pointerenter",()=>runaway(noBtn));
+noBtn.addEventListener("touchstart",(e)=>{e.preventDefault();runaway(noBtn);},{passive:false});
+
+/* SPARK TRAIL */
+function trail(x,y){
+  const t=document.createElement("div");
+  t.className="trail";
+  t.textContent="💖";
+  t.style.left=x+"px"; t.style.top=y+"px";
+  document.body.appendChild(t);
+
+  const ang=Math.random()*Math.PI*2, dist=Math.random()*35+10;
+  const scale=Math.random()*0.5+0.6;
+
+  requestAnimationFrame(()=>{
+    t.style.transform=`translate(calc(-50% + ${Math.cos(ang)*dist}px),
+                                  calc(-50% + ${Math.sin(ang)*dist}px))
+                       scale(${scale})`;
+    t.style.opacity="0";
+  });
+  setTimeout(()=>t.remove(),900);
+}
+
+/* HEART BURST */
+function burst(x,y){
+  for(let i=0;i<55;i++){
+    const b=document.createElement("div");
+    b.className="burst";
+    b.textContent="❤️";
+
+    const size=Math.random()*26+14;
+    const dur=(Math.random()*0.8+0.9).toFixed(2)+"s";
+    b.style.setProperty("--dur",dur);
+    b.style.fontSize=size+"px";
+    b.style.left=x+"px"; b.style.top=y+"px";
+
+    document.body.appendChild(b);
+
+    const ang=Math.random()*Math.PI*2;
+    const dist=Math.random()*300+80;
+    const rot=Math.random()*720-360;
+    const scale=Math.random()*1.8+1;
+
+    requestAnimationFrame(()=>{
+      b.style.transform=
+      `translate(calc(-50% + ${Math.cos(ang)*dist}px),
+                 calc(-50% + ${Math.sin(ang)*dist}px))
+       scale(${scale}) rotate(${rot}deg)`;
+      b.style.opacity="0";
+    });
+
+    setTimeout(()=>b.remove(), parseFloat(dur)*1000+120);
+  }
+}
+
+/* YES CLICK EFFECT + PAGE SWITCH */
+yesBtn.addEventListener("click", ()=>{
+  const r=yesBtn.getBoundingClientRect();
+  const cx=r.left+r.width/2;
+  const cy=r.top+r.height/2;
+
+  let start=performance.now();
+  (function loop(t){
+    if(t-start<300){
+      trail(cx,cy);
+      requestAnimationFrame(loop);
+    }
+  })(start);
+
+  setTimeout(()=>burst(cx,cy),280);
+
+  setTimeout(()=>{
+    page1.style.opacity=0;
+    page2.style.opacity=1;
+    page2.style.pointerEvents="auto";
+
+    /* floating hearts on page 2 */
+    for(let i=0;i<25;i++){
+      const h=document.createElement("div");
+      h.className="bgHeart";
+      h.textContent="❤️";
+      h.style.left=Math.random()*100+"vw";
+      h.style.top=Math.random()*100+"vh";
+      h.style.fontSize=(Math.random()*26+14)+"px";
+      h.style.setProperty("--dur",(Math.random()*4+5)+"s");
+      page2.appendChild(h);
+    }
+  }, 1200);
+});
+</script>
+</body>
+</html>
